@@ -1,0 +1,156 @@
+---
+title: "HW3"
+author: "Thu Nguyen"
+output: word_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error=TRUE)  ## set error=TRUE if you have errors in your code.
+```
+
+## Question 1
+
+(1) Load the HWSchoolData.Rdata workspace. You may use the R menu to load the workspace initially but your script must contain a line of code that will load the workspace the next time you run the script. This code must contain the full path to the workspace file. Some versions of R will make an entry in the console log showing the command that loaded the workspace. If you get this line, you may copy it into your script. Otherwise, you will need to find the command syntax in R documentation or lecture notes and write the command yourself.  
+
+
+```{r}
+load(file = "~/R404/HWSchoolData.rdata")
+
+```
+
+(2).	Show the contents of the R workspace after including the newly loaded workspace. 
+```{r}
+ls()
+```
+
+
+(3).	Display the structure of the object loaded from the HWSchoolData.Rdata workspace. 
+```{r}
+str(Oklahoma)
+```
+
+(4).	Display a summary of the object loaded from the HWSchoolData.Rdata workspace. 
+```{r}
+summary(Oklahoma)
+```
+
+(5).	Compute the average of the HSTotal column. 
+```{r}
+avg = mean(Oklahoma$HSTotal, na.rm = TRUE)
+avg
+```
+
+(6).	Perform a logical test to show which HSTotal values are not missing and are smaller than average.
+
+```{r}
+head(!is.na(Oklahoma[,15]) & Oklahoma[,15] < avg, 20)
+``` 
+
+(7).	Display School, LocCity and HSTotal of records that meet criteria in previous step. 
+
+```{r}
+head(subset(x = Oklahoma,!is.na(Oklahoma[,15]) & Oklahoma[,15] < avg, select = c(School, LocCity, HSTotal)), 30)
+```
+ 
+(8).	 Use the apply function to compute the average class size for grades 7 through 12 for each school. 
+
+
+```{r}
+library(dplyr)
+s = subset(Oklahoma, select= c(Grade7,Grade8,Grade9,Grade10,Grade11,Grade12))
+s[is.na(s)] = 0
+class_avg = apply(s,1,mean)
+class_avg[1:10]
+```
+
+(9).	Use the apply function to create a new column called AvgClassSize by computing the average class size of grades 7 through 12 for each school.
+
+```{r}
+Oklahoma$AvgClassSize = apply(s,1,mean)
+```
+
+(10).	Display the first 5 rows of the modified data frame. 
+
+```{r}
+head(Oklahoma, 5)
+```
+
+## Question 2
+
+'airquality' is a dataset recording daily air quality measurements in New York.
+Write a R program to 
+
+(1) show the first 5 rows of this data 
+
+```{r}
+data(airquality)  
+
+head(airquality,5)
+```
+
+(2) count the number of missing values in each column
+```{r}  
+colSums(is.na(airquality))
+```
+
+(3) use apply function to calculate the maximum for each column (excluding missing values).
+
+```{r}  
+apply(airquality, 2, function(d) max(d, na.rm = TRUE))
+
+```
+
+
+(4) extract all observations (a subset of dataframe) for the month of May.
+
+```{r}  
+gb_obj = airquality %>% group_by(Month==5) 
+
+head(gb_obj, 5)
+```
+
+
+(5) extract all rows (a subset of dataframe ) where 'Ozone' is less than its 1st quartile and 'Month' is not May. 
+
+```{r}  
+first_q = quantile(airquality$Ozone, na.rm= TRUE)[2]
+a = subset(x = airquality, airquality$Ozone < first_q & airquality$Month != 5)
+```
+
+
+(6) 'Temp' is in degrees Fahrenheit. Add a new column called 'Celsius' by transforming 'Temp' to be in degrees Celsius. Note: Celsius=(Fahrenheit-32)/1.8. 
+ 
+```{r}  
+convert = function(f) {
+  c = formatC((f-32)/1.8)
+}
+airquality$Celsius = lapply(airquality$Temp, convert)
+
+head(airquality,5)
+```
+
+ 
+(7) Find the mean temp for each month. 
+
+```{r}  
+by(airquality$Temp, airquality$Month, function(x) mean(x)) #in Fahrenheit 
+#airquality %>% group_by(Month) %>%summarise(mean(Temp))
+```
+
+
+(8) Currently, the airquality dataset is arranged based on Month, and then Day.  Arrange the rows in the descending order of Month, and then in the ascending order of Day.
+
+```{r}  
+head(arrange(airquality, desc(Month), Day), 30)
+```
+
+
+(9) Use the pipe operator (%>%) and dplyr functions to remove all the data corresponding to Month = 5, group the data by month, and then find the mean of the temperature each month. 
+
+```{r}  
+airquality %>% subset(., airquality$Month != 5) %>% group_by(Month) %>% summarise(mean(Temp))
+
+```
+
+

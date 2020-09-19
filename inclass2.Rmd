@@ -1,0 +1,46 @@
+---
+title: "Inclass Assignment 2"
+author: "Thu Nguyen"
+date: "9/17/2020"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+```
+
+(a) Load the 'iris' and summarize it.
+
+```{r}
+data(iris)
+summary(iris)
+
+```
+
+b) Use ggplot to create a scatterplot of Sepal.Length (x axis) with Petal.Length (y axis). 
+Color the points by 'Species'. 
+Label x axis as  'Sepal Length', y axis as 'Petal Length', and title as 'Iris Data'. 
+
+```{r}
+library(ggplot2)
+```
+```{r}
+ggplot(iris, aes(x=Sepal.Length, y=Petal.Length, shape = Species, color = Species)) + 
+   geom_point() + 
+   ggtitle("Iris Data") + 
+   theme(plot.title = element_text(hjust = 0.5))
+```
+
+(c) Use ggplot to create a side-by-side boxplot showing Sepal.Length for each species. 
+Fill the boxplots with different colors by Species. 
+
+```{r}
+ggplot(iris, aes(x = Species, y=Sepal.Length, fill=Species)) + geom_boxplot() + theme(legend.position = "none")
+```
+
+I don't know if you are asking to make a similar plot like the previous question only with boxplot or something else. Here's another way 
+
+```{r}
+ggplot(iris, aes(x = Sepal.Length, y=Petal.Length, fill=Species))+geom_boxplot() + facet_wrap(~Species)
+
+```

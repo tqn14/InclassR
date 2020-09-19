@@ -1,0 +1,23 @@
+---
+title: "Homework1"
+author: "Thu Nguyen"
+date: "08/26/2020"
+output: word_document
+---
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo=TRUE, error=TRUE)
+```
+
+```{r}
+salary <- read.csv("/Users/quynh/Documents/Salary.csv", header = TRUE)
+data <- salary$Salary
+hist(data, xlab='Salary', main = 'histogram of salary')
+```
+
+
+The distribution is skewed to the right, with only a single peak. Thus, this is a unimodel distribution. About 10 to 15% of the data ranges from 40 to 70 while only 5% earned less or more than that.
+```{r}
+mean(data)
+sd(data)
+```
+the mean of the data is 65.6, while std deviation is 30.8 (pretty large)
